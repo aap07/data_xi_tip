@@ -67,3 +67,13 @@ app.put("/api/dataSiswa/:id", (req, res) => {
     res.json({ message: "Data berhasil diperbarui." });
   });
 });
+
+// menghapus data siswa berdasarkan ID
+app.delete("/api/dataSiswa/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM tbl_siswa WHERE id_siswa = ?";
+  pool.query(sql, id, (err, result) => {
+    if (err) throw err;
+    res.json({ message: "Data berhasil dihapus." });
+  });
+});

@@ -12,11 +12,11 @@ function Navbar() {
       </Nav.Item>
       <Nav.Item as="li">
         <NavLink
-          to="/tambahSiswa"
+          to="/dataEskul"
           className="nav-link"
           activeClassName="active"
         >
-          Tambah Siswa
+          Data Eskul
         </NavLink>
       </Nav.Item>
     </Nav>

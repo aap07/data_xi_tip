@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 
 const DataSiswa = () => {
@@ -21,9 +22,27 @@ const DataSiswa = () => {
     navigate(`/editSiswa/${id}`);
   };
 
+  const handleTambah = () => {
+    navigate(`/tambahSiswa`);
+  };
+
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:5000/api/dataSiswa/${id}`)
+      .then(() => fetchData())
+      .catch((err) => console.error(err));
+  };
+
   return (
     <div>
       <h1>Data Siswa XI TIP</h1>
+      <Button
+        onClick={() => handleTambah()}
+        className="mb-2"
+        variant="outline-primary"
+      >
+        Tambah Siswa
+      </Button>
       <table className="table">
         <thead className="table-dark">
           <tr>
@@ -43,6 +62,9 @@ const DataSiswa = () => {
               <td>{item.umur}</td>
               <td>
                 <button onClick={() => handleEdit(item.id_siswa)}>Edit</button>
+                <button onClick={() => handleDelete(item.id_siswa)}>
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

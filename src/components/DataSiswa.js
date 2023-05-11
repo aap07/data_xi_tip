@@ -18,7 +18,7 @@ const DataSiswa = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/editsiswa/${id}`);
+    navigate(`/editSiswa/${id}`);
   };
 
   return (

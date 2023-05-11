@@ -1,8 +1,6 @@
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
-const multer = require("multer");
-const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -18,20 +16,6 @@ const pool = mysql.createPool({
 
 app.use(cors());
 app.use(express.json());
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./images");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const fileExtension = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension);
-  },
-});
-
-const upload = multer({ storage: storage });
-
 
 pool.getConnection((err, connection) => {
   if (err) throw err;
@@ -53,10 +37,9 @@ app.get("/api/dataSiswa", (req, res) => {
 });
 
 // menambahkan data pada tbl_siswa
-app.post("/api/dataSiswa", upload.single("image"), (req, res) => {
+app.post("/api/dataSiswa", (req, res) => {
   const { nis, nama, jk, umur } = req.body;
-  const imagePath = req.file.path;
-  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur, image_path) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}', '${imagePath}')`;
+  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}')`;
   pool.query(sql, (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil ditambahkan." });
@@ -76,9 +59,10 @@ app.get("/api/dataSiswa/:id", (req, res) => {
 // memperbarui data siswa berdasarkan ID
 app.put("/api/dataSiswa/:id", (req, res) => {
   const id = req.params.id;
-  const { nis, nama, jk, umur } = req.body;
-  const sql = "UPDATE tbl_siswa SET nis = ?, nm_siswa = ?, jk = ?, umur = ? WHERE id_siswa = ?";
-  pool.query(sql, [nis, nama, jk, umur, id], (err, result) => {
+  const { nis, nm_siswa, jk, umur } = req.body;
+  const sql =
+    "UPDATE tbl_siswa SET nis = ?, nm_siswa = ?, jk = ?, umur = ? WHERE id_siswa = ?";
+  pool.query(sql, [nis, nm_siswa, jk, umur, id], (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil diperbarui." });
   });

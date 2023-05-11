@@ -9,7 +9,6 @@ const TambahSiswa = () =>{
     nama: "",
     jk: "",
     umur: "",
-    foto:null,
     });
     const navigate = useNavigate();
 
@@ -18,24 +17,28 @@ const TambahSiswa = () =>{
         setSiswa({ ...siswa, [name]: value });
     };
 
-    const handleFileChange = (event) => {
-        setSiswa({ ...siswa, foto: event.target.files[0] });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/api/dataSiswa",
+                siswa,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+        );
+            if (response.data) {
+                alert(response.data.message);
+                setSiswa({ nis: "", nama: "", jk: "", umur: "" });
+                navigate("/");
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-    axios
-        .post("http://localhost:5000/api/dataSiswa", siswa, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        })
-        .then((response) => {
-            setSiswa({ nis: "", nama: "", jk: "", umur: "", foto:null });
-            navigate("/");
-        })
-        .catch((err) => console.error(err));
-    };
 
     return (
         <div>

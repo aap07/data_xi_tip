@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DataSiswa />} />
         <Route path="/tambahSiswa" element={<TambahSiswa />} />
-        <Route path="/editsiswa/:id" element={<EditSiswa />} />
+        <Route path="/editSiswa/:id" element={<EditSiswa />} />
       </Routes>
     </BrowserRouter>
   );

@@ -23,15 +23,21 @@ const EditSiswa = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    axios
-      .put(`http://localhost:5000/api/dataSiswa/${id}`, siswa)
-      .then(() => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/dataSiswa/${id}`, siswa
+      );
+      if (response.data) {
+        alert(response.data.message);
         navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
 
   return (

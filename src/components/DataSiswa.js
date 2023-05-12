@@ -47,6 +47,7 @@ const DataSiswa = () => {
         <thead className="table-dark">
           <tr>
             <th>NIS</th>
+            <th>Foto</th>
             <th>Nama</th>
             <th>Jenis Kelamin</th>
             <th>Umur</th>
@@ -57,6 +58,12 @@ const DataSiswa = () => {
           {data.map((item) => (
             <tr key={item.id_siswa}>
               <td>{item.nis}</td>
+              <td>
+                <img
+                  src={`http://localhost:5000/images/${item.pic_siswa}`}
+                  alt={item.nm_siswa}
+                />
+              </td>
               <td>{item.nm_siswa}</td>
               <td>{item.jk}</td>
               <td>{item.umur}</td>

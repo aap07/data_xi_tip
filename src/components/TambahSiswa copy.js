@@ -5,44 +5,33 @@ import { useNavigate } from "react-router-dom";
 
 const TambahSiswa = () =>{
     const [siswa, setSiswa] = useState({
-        nis: "",
-        nama: "",
-        jk: "",
-        umur: "",
-        foto: null,
+    nis: "",
+    nama: "",
+    jk: "",
+    umur: "",
     });
     const navigate = useNavigate();
 
     const handleChange = (event) => {
-        const { name, value, files } = event.target;
-        if (name === "foto") {
-            setSiswa({ ...siswa, foto: files[0] });
-        } else {
-            setSiswa({ ...siswa, [name]: value });
-        }
+        const { name, value } = event.target;
+        setSiswa({ ...siswa, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const formData = new FormData();
-            formData.append("nis", siswa.nis);
-            formData.append("nama", siswa.nama);
-            formData.append("jk", siswa.jk);
-            formData.append("umur", siswa.umur);
-            formData.append("foto", siswa.foto); // tambahkan file gambar ke FormData
             const response = await axios.post(
                 "http://localhost:5000/api/dataSiswa",
-                formData,
+                siswa,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                 }
         );
             if (response.data) {
                 alert(response.data.message);
-                setSiswa({ nis: "", nama: "", jk: "", umur: "", foto:null });
+                setSiswa({ nis: "", nama: "", jk: "", umur: "" });
                 navigate("/");
             }
         } catch (error) {
@@ -97,14 +86,6 @@ const TambahSiswa = () =>{
                     onChange={handleChange}
                     placeholder="Masukkan Umur"
                 />
-                </Form.Group>
-                <Form.Group controlId="formGambar">
-                    <Form.Label>Gambar</Form.Label>
-                    <Form.Control
-                    type="file"
-                    name="foto"
-                    onChange={handleChange}
-                    />
                 </Form.Group>
                 <Button variant="primary" type="submit">
                 Simpan

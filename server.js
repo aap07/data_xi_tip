@@ -1,10 +1,23 @@
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
+const multer = require("multer");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 const port = 5000;
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./src/images/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 const pool = mysql.createPool({
   connectionLimit: 10,
@@ -37,9 +50,10 @@ app.get("/api/dataSiswa", (req, res) => {
 });
 
 // menambahkan data pada tbl_siswa
-app.post("/api/dataSiswa", (req, res) => {
+app.post("/api/dataSiswa", upload.single("foto"), (req, res) => {
   const { nis, nama, jk, umur } = req.body;
-  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}')`;
+  const pic_siswa = req.file.filename;
+  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur, pic_siswa) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}', '${pic_siswa}')`;
   pool.query(sql, (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil ditambahkan." });

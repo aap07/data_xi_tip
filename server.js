@@ -4,6 +4,7 @@ const cors = require("cors");
 const multer = require("multer");
 require("dotenv").config();
 const path = require("path");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 const port = 5000;
@@ -41,6 +42,25 @@ app.listen(port, () => {
   console.log(`Server berjalan di port ${port}`);
 });
 
+// memeriksa apakah user terautentikasi saat melakukan login
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  const sql = "SELECT * FROM tbl_siswa WHERE username = ?";
+  pool.query(sql, [username], async (err, result) => {
+    if (err) throw err;
+    if (result.length > 0) {
+      const isPasswordMatched = await bcrypt.compare(password, result[0].password);
+      if (isPasswordMatched) {
+        res.json({ message: "Berhasil login." });
+      } else {
+        res.status(401).json({ message: "Password salah." });
+      }
+    } else {
+      res.status(404).json({ message: "Username tidak ditemukan." });
+    }
+  });
+});
+
 // mengambil data pada tbl_siswa
 app.get("/api/dataSiswa", (req, res) => {
   const sql = "SELECT * FROM tbl_siswa";
@@ -52,9 +72,9 @@ app.get("/api/dataSiswa", (req, res) => {
 
 // menambahkan data pada tbl_siswa
 app.post("/api/dataSiswa", upload.single("foto"), (req, res) => {
-  const { nis, nama, jk, umur, password } = req.body;
+  const { nis, username, nama, jk, umur, password } = req.body;
   const pic_siswa = req.file.filename;
-  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur, pic_siswa, password) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}', '${pic_siswa}', '${password}')`;
+  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, username, nm_siswa, jk, umur, pic_siswa, password) VALUES ('', '${nis}', '${username}', '${nama}', '${jk}', '${umur}', '${pic_siswa}', '${password}')`;
   pool.query(sql, (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil ditambahkan." });

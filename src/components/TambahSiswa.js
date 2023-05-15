@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const TambahSiswa = () =>{
     const [siswa, setSiswa] = useState({
         nis: "",
+        username:"",
         nama: "",
         jk: "",
         umur: "",
@@ -30,6 +31,7 @@ const TambahSiswa = () =>{
           const hashedPassword = await hash(siswa.password, 10);
           const formData = new FormData();
           formData.append("nis", siswa.nis);
+          formData.append("username", siswa.username);
           formData.append("nama", siswa.nama);
           formData.append("jk", siswa.jk);
           formData.append("umur", siswa.umur);
@@ -46,7 +48,7 @@ const TambahSiswa = () =>{
           );
           if (response.data) {
             alert(response.data.message);
-            setSiswa({ nis: "", nama: "", jk: "", umur: "", foto: null, password:"" });
+            setSiswa({ nis: "", username:"", nama: "", jk: "", umur: "", foto: null, password:"" });
             navigate("/dataSiswa");
           }
         } catch (error) {
@@ -67,6 +69,16 @@ const TambahSiswa = () =>{
                     value={siswa.nis}
                     onChange={handleChange}
                     placeholder="Masukkan NIS"
+                />
+                </Form.Group>
+                <Form.Group controlId="formUsername">
+                <Form.Label>username</Form.Label>
+                <Form.Control
+                    type="text"
+                    name="username"
+                    value={siswa.username}
+                    onChange={handleChange}
+                    placeholder="Masukkan Username"
                 />
                 </Form.Group>
                 <Form.Group controlId="formNama">

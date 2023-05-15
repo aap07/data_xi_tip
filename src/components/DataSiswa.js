@@ -19,19 +19,23 @@ const DataSiswa = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/editSiswa/${id}`);
+    navigate(`/dataSiswa/editSiswa/${id}`);
   };
 
   const handleTambah = () => {
-    navigate(`/tambahSiswa`);
+    navigate(`/dataSiswa/tambahSiswa`);
   };
 
   const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:5000/api/dataSiswa/${id}`)
-      .then(() => fetchData())
-      .catch((err) => console.error(err));
+    const confirmDelete = window.confirm("Anda yakin ingin menghapus siswa ini?");
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:5000/api/dataSiswa/${id}`)
+        .then(() => fetchData())
+        .catch((err) => console.error(err));
+    }
   };
+
 
   return (
     <div>
@@ -62,6 +66,8 @@ const DataSiswa = () => {
                 <img
                   src={`http://localhost:5000/images/${item.pic_siswa}`}
                   alt={item.nm_siswa}
+                  width="50"
+                  height="50"
                 />
               </td>
               <td>{item.nm_siswa}</td>

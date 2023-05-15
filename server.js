@@ -29,6 +29,7 @@ const pool = mysql.createPool({
 
 app.use(cors());
 app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "src/images")));
 
 pool.getConnection((err, connection) => {
   if (err) throw err;
@@ -51,9 +52,9 @@ app.get("/api/dataSiswa", (req, res) => {
 
 // menambahkan data pada tbl_siswa
 app.post("/api/dataSiswa", upload.single("foto"), (req, res) => {
-  const { nis, nama, jk, umur } = req.body;
+  const { nis, nama, jk, umur, password } = req.body;
   const pic_siswa = req.file.filename;
-  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur, pic_siswa) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}', '${pic_siswa}')`;
+  const sql = `INSERT INTO tbl_siswa (id_siswa , nis, nm_siswa, jk, umur, pic_siswa, password) VALUES ('', '${nis}', '${nama}', '${jk}', '${umur}', '${pic_siswa}', '${password}')`;
   pool.query(sql, (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil ditambahkan." });

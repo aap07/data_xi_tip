@@ -31,7 +31,7 @@ const EditSiswa = () => {
       );
       if (response.data) {
         alert(response.data.message);
-        navigate("/");
+        navigate("/dataSiswa");
         return;
       }
     } catch (err) {

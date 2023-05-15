@@ -12,8 +12,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<DataSiswa />} />
-        <Route path="/tambahSiswa" element={<TambahSiswa />} />
-        <Route path="/editSiswa/:id" element={<EditSiswa />} />
+        <Route path="/dataSiswa" element={<DataSiswa />} />
+        <Route path="/dataSiswa/tambahSiswa" element={<TambahSiswa />} />
+        <Route path="/dataSiswa/editSiswa/:id" element={<EditSiswa />} />
         <Route path="/dataEskul" element={<DataEskul />} />
       </Routes>
     </BrowserRouter>

@@ -93,16 +93,27 @@ app.get("/api/dataSiswa/:id", (req, res) => {
 });
 
 // memperbarui data siswa berdasarkan ID
-app.put("/api/dataSiswa/:id", (req, res) => {
+app.put("/api/dataSiswa/:id", upload.single("foto"), (req, res) => {
   const id = req.params.id;
-  const { nis, nm_siswa, jk, umur } = req.body;
+  const getPicQuery = "SELECT pic_siswa FROM tbl_siswa WHERE id_siswa = ?";
+  pool.query(getPicQuery, id, (err, result) => {
+    if (err) throw err;
+    const oldPic = result[0].pic_siswa;
+    const oldPicPath = path.join(__dirname, "src/images", oldPic);
+    fs.unlink(oldPicPath, (err) => {
+      if (err) console.log(err);
+    });
+  });
+  const pic_siswa = req.file.filename;
+  const { nis, username, nm_siswa, jk, umur } = req.body;
   const sql =
-    "UPDATE tbl_siswa SET nis = ?, nm_siswa = ?, jk = ?, umur = ? WHERE id_siswa = ?";
-  pool.query(sql, [nis, nm_siswa, jk, umur, id], (err, result) => {
+    "UPDATE tbl_siswa SET nis = ?, username = ?, nm_siswa = ?, jk = ?, umur = ?, pic_siswa = ? WHERE id_siswa = ?";
+  pool.query(sql, [nis, username, nm_siswa, jk, umur, pic_siswa, id], (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil diperbarui." });
   });
 });
+
 
 // menghapus data siswa berdasarkan ID
 app.delete("/api/dataSiswa/:id", (req, res) => {

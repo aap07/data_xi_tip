@@ -7,6 +7,7 @@ const EditSiswa = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [siswa, setSiswa] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     axios
@@ -23,22 +24,58 @@ const EditSiswa = () => {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/api/dataSiswa/${id}`, siswa
-      );
-      if (response.data) {
-        alert(response.data.message);
-        navigate("/dataSiswa");
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+  const handleImageChange = (e) => {
+    setSelectedFile(e.target.files[0]);
   };
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const response = await axios.put(
+  //       `http://localhost:5000/api/dataSiswa/${id}`, siswa
+  //     );
+  //     if (response.data) {
+  //       alert(response.data.message);
+  //       navigate("/dataSiswa");
+  //       return;
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.message);
+  //   }
+  // };
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      // prepare form data
+      const formData = new FormData();
+      formData.append("foto", selectedFile);
+      formData.append("username", siswa.username);
+      formData.append("nis", siswa.nis);
+      formData.append("nm_siswa", siswa.nama);
+      formData.append("jk", siswa.jk);
+      formData.append("umur", siswa.umur);
+
+      try {
+        const response = await axios.put(
+          `http://localhost:5000/api/dataSiswa/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.data) {
+          alert(response.data.message);
+          navigate("/dataSiswa");
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
+      }
+    };
 
   return (
     <div>
@@ -54,12 +91,22 @@ const EditSiswa = () => {
             placeholder="Masukkan NIS"
           />
         </Form.Group>
+        <Form.Group controlId="formUsername">
+          <Form.Label>username</Form.Label>
+          <Form.Control
+            type="text"
+            name="username"
+            value={siswa.username}
+            onChange={handleInputChange}
+            placeholder="Masukkan Username"
+          />
+        </Form.Group>
         <Form.Group controlId="formNama">
           <Form.Label>Nama</Form.Label>
           <Form.Control
             type="text"
-            name="nm_siswa"
-            value={siswa.nm_siswa}
+            name="nama"
+            value={siswa.nama}
             onChange={handleInputChange}
             placeholder="Masukkan Nama"
           />
@@ -86,6 +133,10 @@ const EditSiswa = () => {
             onChange={handleInputChange}
             placeholder="Masukkan Umur"
           />
+        </Form.Group>
+        <Form.Group controlId="formGambar">
+          <Form.Label>Gambar</Form.Label>
+          <Form.Control type="file" name="foto" onChange={handleImageChange} />
         </Form.Group>
         <Button variant="primary" type="submit">
           Simpan

@@ -5,6 +5,7 @@ const multer = require("multer");
 require("dotenv").config();
 const path = require("path");
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
 
 const app = express();
 const port = 5000;
@@ -110,5 +111,19 @@ app.delete("/api/dataSiswa/:id", (req, res) => {
   pool.query(sql, id, (err, result) => {
     if (err) throw err;
     res.json({ message: "Data berhasil dihapus." });
+  });
+});
+
+// menghapus file gambar
+app.delete("/api/images/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const path = `./src/images/${filename}`;
+  fs.unlink(path, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ message: "Gagal menghapus file." });
+    } else {
+      res.json({ message: "File berhasil dihapus." });
+    }
   });
 });

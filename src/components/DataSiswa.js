@@ -26,12 +26,21 @@ const DataSiswa = () => {
     navigate(`/dataSiswa/tambahSiswa`);
   };
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Anda yakin ingin menghapus siswa ini?");
+  const handleDelete = (id, pic_siswa) => {
+    const confirmDelete = window.confirm(
+      "Anda yakin ingin menghapus siswa ini?"
+    );
     if (confirmDelete) {
       axios
         .delete(`http://localhost:5000/api/dataSiswa/${id}`)
-        .then(() => fetchData())
+        .then(() => {
+          if (pic_siswa) {
+            axios
+              .delete(`http://localhost:5000/api/images/${pic_siswa}`)
+              .catch((err) => console.error(err));
+          }
+          fetchData();
+        })
         .catch((err) => console.error(err));
     }
   };
@@ -75,7 +84,7 @@ const DataSiswa = () => {
               <td>{item.umur}</td>
               <td>
                 <button onClick={() => handleEdit(item.id_siswa)}>Edit</button>
-                <button onClick={() => handleDelete(item.id_siswa)}>
+                <button onClick={() => handleDelete(item.id_siswa, item.pic_siswa)}>
                   Delete
                 </button>
               </td>
